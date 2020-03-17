@@ -2,7 +2,7 @@
 This script reads through all the "BIRT" OpCon reports and and strips out the root SQL queries.  The query information can optionally be send to an OpCon job for immediate execution.
 
 # Prerequisites
-* OpCon Release 18.3
+* OpCon Release 18.3 (should work in others but this was the version tested against)
 * PowerShell 5.1
 
 # Instructions
@@ -32,6 +32,13 @@ Parameters:
 * <b>url</b> - OpCon API url (instead of MSGIN)
 * <b>token</b> - OpCon API token (instead of MSGIN)
 
+# OpCon setup
+The below information can be altered in the script or added to the parameters.
+
+-The job name is "RUN REPORT" in the "Adhoc" schedule with a frequency of "OnRequest" (the frequency definition is something in the past so it will never build unless an event calls it).  
+-The job type is "SQL" with predefined user/sql server/sql db that you will need to customize based on your environment.  
+-The "SQL Script" tab should have the "Script File" option selected with a "Script File Path" value of: "[[JI.FILE]]".
+-There should be a "NOTIFY:EMAIL" event on the job with an attachment pointing to "[[JI.OUTPUT]]\[[JI.REPORT]].csv"
 
 # Disclaimer
 No Support and No Warranty are provided by SMA Technologies for this project and related material. The use of this project's files is on your own risk.
