@@ -12,6 +12,7 @@ report except you will need to answer the "birtpath" and "runas" parameters.
 Changelog                                                      Date
 -----------------------------------------------------------------------------------
 Version 1.0                                                    3/14/2018
+Version 1.1 - added outputpath param and fixed a few bugs      7/16/2020
 
 #>
 
@@ -26,11 +27,12 @@ param(
     $deptid,  #Same as current BIRT
     $tagname,  #Same as current BIRT
     $birtpath = "C:\Program Files\OpConxps\SAM\BIRT\ReportEngine\OpConXPS_Reports", #Path to the BIRT report directory
+    $outputpath = "C:\Bruce\Roundtables", # Path to output raw SQL statements
     $o,  #Same as current BIRT
     $runas,    #User permissions to simulate when building query
     $opconmodule = "C:\ProgramData\OpConxps\Demo\OpCon.psm1", #Path to opcon module file
     $r,  #Same as current BIRT
-    $report, #Name of report to run
+    $report = "Estimated Run Time by Schedule", #Name of report to run
     $msgin,  #Path to msgin directory
     $extuser,#External event user name
     $extpword, #External event password
@@ -233,7 +235,10 @@ else
 Get-ChildItem $birtpath -Filter $filter | 
 Foreach-Object {
     $details = [xml] (Get-Content -Path $_.FullName)
-    $reportname = $details.report.'text-property'.'#text'
+    $reportname = ($details.report.'text-property'.'#text')
+    if($reportname -like "*/*")
+    { $reportname = $reportname.Replace("/","-") }
+    
 
     if(($report -eq $reportname) -or (!$report))
     {
@@ -242,9 +247,9 @@ Foreach-Object {
         
         if($sql)
         { 
-            Write-Host "-- Building SQL query for Report $reportname -- `r`n"
-            Write-Host $sql
-            Write-Host "`r`n-----------------------------------------------------------------------------`r`n`r`n"
+            Write-Host "-- Building SQL query for report: $reportname -- `r`n"
+            #Write-Host $sql
+            #Write-Host "`r`n-----------------------------------------------------------------------------`r`n`r`n"
 
             #These are replacements needed to have the SQL query work, normally they are replaced as inputs
             $sql = $sql.Replace('$(SKDDATE)','(' + $dlist + ')')
@@ -261,8 +266,8 @@ Foreach-Object {
             $sql = $sql.Replace('$(MACHS_MACHID)','(SELECT MACHGRPID FROM MACHGRPS WHERE MACHGRP IN (' + $machgrplist + '))')
 
             #Outputs query/s to a file (this is the file that would be run by a subsequent process
-            $sql | Out-File -filepath "$birtpath\$reportname.sql"  #Update to $reportname from $report
-            $outputpath = ("$o").Replace("\","\\")
+            $sql | Out-File -filepath "$outputpath\$reportname.sql"  #Update to $reportname from $report
+            $finalpath = ("$o").Replace("\","\\")
             
             #Will send an event to OpCon through MSGIN or the API to run the query
             if($run -eq "yes")
