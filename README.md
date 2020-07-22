@@ -18,7 +18,7 @@ Parameters:
 * <b>skdid</b> - Same as BIRT
 * <b>deptid</b> - Same as BIRT
 * <b>tagname</b> - Same as BIRT
-* <b>birthpath</b> - Path to the BIRT report directory, default is: C:\Program Files\OpConxps\SAM\BIRT\ReportEngine\OpConXPS_Reports
+* <b>birtpath</b> - Path to the BIRT report directory, default is: C:\Program Files\OpConxps\SAM\BIRT\ReportEngine\OpConXPS_Reports
 * <b>o</b> - Same as BIRT
 * <b>runas</b> - User permissions to simulate when building the query
 * <b>opconmodule</b> - Path to the OpCon API module (available in the Innovation Lab <a href="https://github.com/SMATechnologies/opcon-rest-api-client-powershell">here</a>)
@@ -31,6 +31,7 @@ Parameters:
 * <b>run</b> - Yes/No whether to submit an OpCon event to run the report
 * <b>url</b> - OpCon API url (instead of MSGIN)
 * <b>token</b> - OpCon API token (instead of MSGIN)
+* <b>outputpath</b> - Path to output the resulting SQL queries too
 
 # OpCon setup
 The below information can be altered in the script or added to the parameters.
